@@ -37,16 +37,16 @@ def send_order(data):
     """
 
     # Replace kraken with your exchange of choice.
-    exchange = ccxt.kraken({
-        # Inset your API key and secrets for exchange in question.
-        'apiKey': '',
-        'secret': '',
-        'enableRateLimit': True,
-    })
+#    exchange = ccxt.kraken({
+#        # Inset your API key and secrets for exchange in question.
+#        'apiKey': '',
+#        'secret': '',
+#        'enableRateLimit': True,
+##    })
 
-    # Send the order to the exchange, using the values from the tradingview alert.
-    print('Sending:', data['symbol'], data['type'], data['side'], data['amount'], calc_price(data['price']))
-    order = exchange.create_order(data['symbol'], data['type'], data['side'], data['amount'], calc_price(data['price']))
+    # Send the order to the exchange, using the values from the tradingview alert.#
+#    print('Sending:', data['symbol'], data['type'], data['side'], data['amount'])) #, (data['price']))
+#    order = exchange.create_order(data['symbol'], data['type'], data['side'], data['amount'], calc_price(data['price']))
     # This is the last step, the response from the exchange will tell us if it made it and what errors pop up if not.
-    print('Exchange Response:', order)
-
+#    print('Exchange Response:', order)
+    print("Order Sent")
