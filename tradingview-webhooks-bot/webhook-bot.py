@@ -17,8 +17,8 @@ import time
 import os
 import subprocess
 import logging
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+#log = logging.getLogger('werkzeug')
+#log.setLevel(logging.ERROR)
 
 from datetime import datetime
 import pytz

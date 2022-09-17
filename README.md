@@ -37,20 +37,4 @@ Many people are having difficulties with their server properly receiving webhook
 
 ### Quick Start Guide
 
-
-# FTX webhook bot notes
-
-1. use ftx cli for trade placement https://github.com/duskcodes/ftx-cli
-2. login to ngrok.com account
-3. download updated ngrok
-4. make sure ngrok is authenticated with authcode listed on ngrok install page
-5. run `./ngrok http 5000`
-6. then `pipenv shell`
-7. then run `webhook-bot.py` to start webhook server on 5000
-8. setup tradingview alerts using https://github.com/alleyway/add-tradingview-alerts-tool
-
-```bash
-	./atat add-alerts --delay 250 config_longenter.yml && ./atat add-alerts --delay 250 config_longadd.yml && ./atat add-alerts --delay 250 config_longexit.yml && ./atat add-alerts --delay 250 config_longtp.yml && ./atat add-alerts --delay 250 config_shortenter.yml && ./atat add-alerts --delay 250 config_shortadd.yml && ./atat add-alerts --delay 250 config_shortexit.yml && ./atat add-alerts --delay 250 config_shortTP.yml
-```
-
 [Here is a quick start guide!](https://github.com/Robswc/tradingview-webhooks-bot/wiki/Quick-Start-Guide) Once everything is set up, you can use this guide to get started!
