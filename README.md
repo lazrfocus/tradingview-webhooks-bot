@@ -38,18 +38,3 @@ Many people are having difficulties with their server properly receiving webhook
 ### Quick Start Guide
 
 [Here is a quick start guide!](https://github.com/Robswc/tradingview-webhooks-bot/wiki/Quick-Start-Guide) Once everything is set up, you can use this guide to get started!
-
-login to ngrok.com account
-download updated ngrok
-make sure ngrok is authenticated with authcode listed on ngrok install page
-
-run `./ngrok http 5000`
-then `pipenv shell`
-then run `webhook-bot.py` to start webhook server on 5000
-setup tradingview alerts using ./atat  https://github.com/alleyway/add-tradingview-alerts-tool
-check .zshrc for example aliases
-run wallet and pnl to check wallet status and positions
-commands: long [..], short [..], exlong [..], exshort [..], exlongs, exshorts, pnl_automonitor
-```bash
-	./atat add-alerts --delay 250 config_longenter.yml && ./atat add-alerts --delay 250 config_longadd.yml && ./atat add-alerts --delay 250 config_longexit.yml && ./atat add-alerts --delay 250 config_longtp.yml && ./atat add-alerts --delay 250 config_shortenter.yml && ./atat add-alerts --delay 250 config_shortadd.yml && ./atat add-alerts --delay 250 config_shortexit.yml && ./atat add-alerts --delay 250 config_shortTP.yml
-```

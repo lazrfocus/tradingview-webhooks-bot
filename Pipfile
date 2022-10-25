@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 ccxt = "*"
+flask = "*"
+pytz = "*"
 
 [dev-packages]
 
