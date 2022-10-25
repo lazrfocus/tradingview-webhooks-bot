@@ -28,5 +28,21 @@ There you go! Nice and simple Python version and virtualenv management.
 Many people are having difficulties with their server properly receiving webhook data from TradingView. The easiest way to get started quickly without ripping your hair out from trying to figure out what's wrong, [ngrok](https://ngrok.com/) can be used to receive the signals. Create a free account, unless you want your server to go down every 8 hours. Navigate to the downloads page, and select your download to match your machine. For example, I am on Ubuntu: `wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip`
 
 ### Quick Start Guide
+follow install instructions above with pipenv
+pipenv install flask and other remaining missing dependancies, will try to fix on later commit
 
-[Here is a quick start guide!](https://github.com/Robswc/tradingview-webhooks-bot/wiki/Quick-Start-Guide) Once everything is set up, you can use this guide to get started!
+login to ngrok.com account
+download updated ngrok
+make sure ngrok is authenticated with authcode listed on ngrok install page
+
+run `./ngrok http 5000`
+then `pipenv shell`
+then run `webhook-bot.py` to start webhook server on 5000
+setup tradingview alerts using ./atat  https://github.com/alleyway/add-tradingview-alerts-tool
+check .zshrc for example aliases
+run wallet and pnl to check wallet status and positions
+install ftx-cli from https://github.com/duskcodes/ftx-cli
+commands: long [..], short [..], exlong [..], exshort [..], exlongs, exshorts, pnl_automonitor
+```bash
+	./atat add-alerts --delay 250 config_longenter.yml && ./atat add-alerts --delay 250 config_longadd.yml && ./atat add-alerts --delay 250 config_longexit.yml && ./atat add-alerts --delay 250 config_longtp.yml && ./atat add-alerts --delay 250 config_shortenter.yml && ./atat add-alerts --delay 250 config_shortadd.yml && ./atat add-alerts --delay 250 config_shortexit.yml && ./atat add-alerts --delay 250 config_shortTP.yml
+```
