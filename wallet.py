@@ -4,8 +4,10 @@ import time
 from datetime import datetime
 import pytz
 from pytz import timezone
-API = "Z4SFREtdLmPpPC_AuzN2uNZwcZv1lRp8gtBZaUOo"
-SECRET = "vIi-58XacD282GjZRB43usYrNLRib5ML8K_-mA41"
+import subprocess
+import re
+API = "3FfaG5O54edBvGUCtRjBnHygx7TiCR-OYn26C2VV"
+SECRET = "4nTPsEqnNPkV9Pm-XkSSPQ2J2GKhzAhno3by77Qx"
 
 client = Client(API, SECRET)
 #info = client.get_markets()
@@ -24,6 +26,8 @@ ethFreeShort = 0
 
 date_format='%m/%d/%Y %H:%M:%S %Z'
 
+ping_response = subprocess.Popen(["/bin/ping", "-c1", "ftx.com"], stdout=subprocess.PIPE).stdout.read()
+
 while 1:
     os.system('clear')
     date = datetime.now(tz=pytz.utc)
@@ -33,8 +37,9 @@ while 1:
     print('Short: $',round(usdFreeShort,2),'($',round(usdTotalShort,2), ') |',round(ethFreeShort,5),'(',round(ethTotalShort,5),')')
     print('--------------------------------------------------------------')
     print('Total: $',round(usdFree,2),'($',round(usdTotal,2), ') |',round(ethFree,5),'/(',round(ethTotal,5),')')
+    print(re.search(r'time=(\d+)',ping_response.decode(), re.MULTILINE).group(1)+' ms')
 
-
+    #print(os.system("ping -c 1 -w2 " + "ftx.com" + " > /dev/null 2>&1"))
     usdTotalLong = 0
     ethTotalLong = 0
     usdFreeLong = 0
@@ -65,10 +70,13 @@ while 1:
         ethFree=ethFreeLong+ethFreeShort
         usdTotal=usdTotalLong+usdTotalShort
         usdFree=usdFreeLong+usdFreeShort
+
+        ping_response = subprocess.Popen(["/bin/ping", "-c1", "ftx.com"], stdout=subprocess.PIPE).stdout.read()
     except:
        print('error')
-
+    
     time.sleep(1)
     os.system('clear')
+    print(re.search(r'time=(\d+)',ping_response.decode(), re.MULTILINE).group(1)+' ms')
 
 
