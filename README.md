@@ -47,3 +47,5 @@ commands: long [..], short [..], exlong [..], exshort [..], exlongs, exshorts, p
 ```bash
 	./atat add-alerts --delay 250 config_longenter.yml && ./atat add-alerts --delay 250 config_longadd.yml && ./atat add-alerts --delay 250 config_longexit.yml && ./atat add-alerts --delay 250 config_longtp.yml && ./atat add-alerts --delay 250 config_shortenter.yml && ./atat add-alerts --delay 250 config_shortadd.yml && ./atat add-alerts --delay 250 config_shortexit.yml && ./atat add-alerts --delay 250 config_shortTP.yml
 ```
+the tradingview webhook address will be the ngrok address + /webhook
+ie: https://1234-45-789-000-00.ngrok.io/webhook
