@@ -42,6 +42,7 @@ setup tradingview alerts using ./atat  https://github.com/alleyway/add-tradingvi
 check .zshrc for example aliases
 run wallet and pnl to check wallet status and positions
 install ftx-cli from https://github.com/duskcodes/ftx-cli
+install python-ftx from https://github.com/wanth1997/python-ftx.git
 commands: long [..], short [..], exlong [..], exshort [..], exlongs, exshorts, pnl_automonitor
 ```bash
 	./atat add-alerts --delay 250 config_longenter.yml && ./atat add-alerts --delay 250 config_longadd.yml && ./atat add-alerts --delay 250 config_longexit.yml && ./atat add-alerts --delay 250 config_longtp.yml && ./atat add-alerts --delay 250 config_shortenter.yml && ./atat add-alerts --delay 250 config_shortadd.yml && ./atat add-alerts --delay 250 config_shortexit.yml && ./atat add-alerts --delay 250 config_shortTP.yml
