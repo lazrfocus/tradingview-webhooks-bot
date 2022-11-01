@@ -6,8 +6,10 @@ import pytz
 from pytz import timezone
 import subprocess
 import re
-API = "3FfaG5O54edBvGUCtRjBnHygx7TiCR-OYn26C2VV"
-SECRET = "4nTPsEqnNPkV9Pm-XkSSPQ2J2GKhzAhno3by77Qx"
+
+import api_keys
+API = api_keys.FTX_KEY
+SECRET = api_keys.FTX_SECRET
 
 client = Client(API, SECRET)
 #info = client.get_markets()

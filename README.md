@@ -1,51 +1,30 @@
-forked from robswc/tradingview-webhooks-bot
+forked from robswc/tradingview-webhooks-bot and hacked/modified for my own use
 
 # Tradingview-webhooks-bot
 
 tradingview-webhooks-bot is a trading bot, written in python that allows users to place trades with tradingview's webhook alerts.
 
 ---
-
-## Quickstart Using Pipenv
-
-Pipenv is a tool that helps users set virtual environments and install dependencies with ease. There are many benefits to creating a virtual environment, especially for those that haev other projects running on the same server.
-
-### Install pipenv and initiate virtual environment
-
-1. Install pipenv `sudo apt install pipenv`
-2. Once pipenv is installed, I recommend that you [get familiar with it](https://github.com/pypa/pipenv).
-3. Navigate to the folder where you cloned the repo. You should see `Pipfile` and `Pipfile.lock` files.
-4. Run command `pipenv install`
-5. The dependencies required to get started should now be installed. Check by running command `pipenv graph` - You should see flask and ccxt.
-6. If you want to install any other dependencies, or if you get an error that you're missing a depedency, simply use command `pipenv install <dependency>`
-7. Starting the virtual environment: `pipenv shell`
-8. Starting the flask app: `python webhook-bot.py`
-
-There you go! Nice and simple Python version and virtualenv management.
-
-### Using ngrok for webook data retrieval
-
-Many people are having difficulties with their server properly receiving webhook data from TradingView. The easiest way to get started quickly without ripping your hair out from trying to figure out what's wrong, [ngrok](https://ngrok.com/) can be used to receive the signals. Create a free account, unless you want your server to go down every 8 hours. Navigate to the downloads page, and select your download to match your machine. For example, I am on Ubuntu: `wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip`
-
 ### Quick Start Guide
-follow install instructions above with pipenv
-pipenv install flask and other remaining missing dependancies, will try to fix on later commit
 
-login to ngrok.com account
-download updated ngrok
-make sure ngrok is authenticated with authcode listed on ngrok install page
+1. pip3 install ccxt flask pytz
+2. pip3 install python-ftx **req. to be deleted soon**  (python-ftx from https://github.com/wanth1997/python-ftx.git)
+12. install ftx-cli from https://github.com/duskcodes/ftx-cli **req. to be deleted soon**
+3. create api_keys.py file and follow format of api_keys_example.py w/ the keys for your exchange
+4. create/login to ngrok.com account
+5. download and install latest ngrok
+6. make sure ngrok is authenticated with authcode listed on ngrok install page
 
-run `./ngrok http 5000`
-then `pipenv shell`
-then run `webhook-bot.py` to start webhook server on 5000
-setup tradingview alerts using ./atat  https://github.com/alleyway/add-tradingview-alerts-tool
-check .zshrc for example aliases
-run wallet and pnl to check wallet status and positions
-install ftx-cli from https://github.com/duskcodes/ftx-cli
-install python-ftx from https://github.com/wanth1997/python-ftx.git
+7. run `./ngrok http 5000` (or whichever port you want to use)
+8. then run `webhook-bot.py` to start webhook server on 5000 (change port inside .py file)
+
+9. bulk setup tradingview alerts using ./atat  https://github.com/alleyway/add-tradingview-alerts-tool
+10. check .zshrc for example aliases for manual order entry aliases
+11. run wallet and pnl to check wallet status and positions
+
 commands: long [..], short [..], exlong [..], exshort [..], exlongs, exshorts, pnl_automonitor
 ```bash
 	./atat add-alerts --delay 250 config_longenter.yml && ./atat add-alerts --delay 250 config_longadd.yml && ./atat add-alerts --delay 250 config_longexit.yml && ./atat add-alerts --delay 250 config_longtp.yml && ./atat add-alerts --delay 250 config_shortenter.yml && ./atat add-alerts --delay 250 config_shortadd.yml && ./atat add-alerts --delay 250 config_shortexit.yml && ./atat add-alerts --delay 250 config_shortTP.yml
 ```
-the tradingview webhook address will be the ngrok address + /webhook
+12. **the tradingview webhook address will be the ngrok address + /webhook**
 ie: https://1234-45-789-000-00.ngrok.io/webhook
