@@ -2,6 +2,7 @@ import subprocess
 import datetime
 import re
 import pytz
+import time
 
 date_format='%m/%d/%Y %H:%M:%S %Z'
 def print_time():

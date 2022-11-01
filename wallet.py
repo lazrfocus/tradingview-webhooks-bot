@@ -1,84 +1,53 @@
-from ftx import Client
 import os
-import time
-from datetime import datetime
-import pytz
-from pytz import timezone
 import subprocess
-import re
-
+import asyncio
+import ccxt.async_support as ccxt
 import api_keys
-API = api_keys.FTX_KEY
-SECRET = api_keys.FTX_SECRET
+import generic_functions as func
 
-client = Client(API, SECRET)
-#info = client.get_markets()
-usdTotal = 0
-ethTotal = 0
-usdFree = 0
-ethFree = 0
-usdTotalLong = 0
-ethTotalLong = 0
-usdFreeLong = 0
-ethFreeLong = 0
-usdTotalShort = 0
-ethTotalShort = 0
-usdFreeShort = 0
-ethFreeShort = 0
+myBalance = None
 
-date_format='%m/%d/%Y %H:%M:%S %Z'
+async def get_balance():
+    global myBalance
 
-ping_response = subprocess.Popen(["/bin/ping", "-c1", "ftx.com"], stdout=subprocess.PIPE).stdout.read()
+    ftx = ccxt.ftx({
+        'apiKey': api_keys.FTX_KEY,
+        'secret': api_keys.FTX_SECRET,
+        'enableRateLimit': True,
+        # "proxy": "https://cors-anywhere.herokuapp.com/",   ##TODO: create cors vpn
+        # "origin": "bitstamp"
+    })
+    try:
+        myBalance = await ftx.fetch_balance()
+    except:
+        print('error')
+    
+    await ftx.close()  # don't forget to close it when you're done
 
-while 1:
-    os.system('clear')
-    date = datetime.now(tz=pytz.utc)
-    date = date.astimezone(timezone('US/Pacific'))
-    print(date.strftime(date_format))
-    print(' Main: $',round(usdFreeLong,2),'($',round(usdTotalLong,2), ') |',round(ethFreeLong,5),'(',round(ethTotalLong,5),')')
-    print('Short: $',round(usdFreeShort,2),'($',round(usdTotalShort,2), ') |',round(ethFreeShort,5),'(',round(ethTotalShort,5),')')
-    print('--------------------------------------------------------------')
-    print('Total: $',round(usdFree,2),'($',round(usdTotal,2), ') |',round(ethFree,5),'/(',round(ethTotal,5),')')
-    print(re.search(r'time=(\d+)',ping_response.decode(), re.MULTILINE).group(1)+' ms')
+def print_balance():
+    global myBalance
 
-    #print(os.system("ping -c 1 -w2 " + "ftx.com" + " > /dev/null 2>&1"))
-    usdTotalLong = 0
-    ethTotalLong = 0
-    usdFreeLong = 0
-    ethFreeLong = 0
-    usdTotalShort = 0
-    ethTotalShort = 0
-    usdFreeShort = 0
-    ethFreeShort = 0
+    if myBalance != None:
+        print('\033[1m','Coin','\033[0m', 'Total',' | ','Free', ' | ', 'USD Value','\x1b[0m')
+        for i in myBalance['info']['result']:
+            if abs(float(i['total'])) > 0.01:
+                print('\033[1m',i['coin'],'\033[0m', round(float(i['total']),2),' | ',round(float(i['free']),2), ' | ', round(float(i['usdValue']),2),'\x1b[0m')
+        else:
+            pass
+    
+    return True
+
+if __name__ == '__main__':
     
     try:
-        info = client.get_all_balances()
-        for i in info['result']['main']:
-            if i['coin']=='USD':
-                usdTotalLong = i['total']
-                usdFreeLong = i['free']
-            elif i['coin']=='ETH':
-                ethTotalLong = i['total']
-                ethFreeLong = i['free']
-        for i in info['result']['Short']:
-            if i['coin']=='USD':
-                usdTotalShort = i['total']
-                usdFreeShort = i['free']
-            elif i['coin']=='ETH':
-                ethTotalShort = i['total']
-                ethFreeShort = i['free']
-               #     print(i['coin'],round(i['total'],2),round(i['free'],2))
-        ethTotal=ethTotalLong+ethTotalShort
-        ethFree=ethFreeLong+ethFreeShort
-        usdTotal=usdTotalLong+usdTotalShort
-        usdFree=usdFreeLong+usdFreeShort
-
-        ping_response = subprocess.Popen(["/bin/ping", "-c1", "ftx.com"], stdout=subprocess.PIPE).stdout.read()
-    except:
-       print('error')
-    
-    time.sleep(1)
-    os.system('clear')
-    print(re.search(r'time=(\d+)',ping_response.decode(), re.MULTILINE).group(1)+' ms')
-
-
+        while True:
+            asyncio.new_event_loop().run_until_complete(get_balance())
+            subprocess.call('clear', shell=True)
+            func.print_time()
+            print_balance()
+            func.print_ping()
+            #time.sleep(1)
+    except KeyboardInterrupt:
+        print('Interrupted')
+        os._exit(0)
+        
