@@ -38,7 +38,7 @@ def print_chart(exchange, symbol, timeframe):
     series = [x[index] for x in ohlcv]
 
     # print the chart
-    print("\n" + plot(series[-120:], {'height': 20}))  # print the chart
+    print("\n" + plot(series[-120:], {'height': 20, 'format':'{:8.4f}'}))
 
     last = ohlcv[len(ohlcv) - 1][index]  # last closing price
     return last
