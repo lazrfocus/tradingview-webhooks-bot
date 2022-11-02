@@ -1,77 +1,72 @@
 # -*- coding: utf-8 -*-
-
-import os
-import sys
 import subprocess
 from ftx import ThreadedWebsocketManager
 import api_keys
-import asyncio
-
+import subprocess
 from asciichartpy import plot
+import generic_functions as func
+#from termgraph import CandleStickGraph
 
 API = api_keys.FTX_KEY
 SECRET = api_keys.FTX_SECRET
 
-symbol = 'DOGE-PERP'
+ticker = 'DOGE-PERP'
 priceArray = []
-bidArray = []
-askArray = []
+# bidArray = []
+# askArray = []
+
 
 def print_chart():
     global priceArray
-    global askArray
-    global bidArray
-    subprocess.call('clear', shell=True)            
-    print("\n" + plot([priceArray, askArray, bidArray], {'height': 8, 'format':'{:8.4f}'}),)
-    print("\n" + symbol + "= $" + str(priceArray[-1]))  # print last closing price            
-    print("\n", round((askArray[-1]-bidArray[-1])/((askArray[-1]+bidArray[-1])/2)*100,4),"%" + " spread")
+    # global askArray
+    # global bidArray
+    # subprocess.call('clear', shell=True)            
+    func.clear_sceen()
+    # print("\n" + plot([priceArray, askArray, bidArray], {'height': 8, 'format':'{:8.4f}'}),)
+    # scrn.addstr(0,0,plot(priceArray, {'height': 8, 'format':'{:8.4f}'}))
+    print(plot(priceArray, {'height': 8, 'format':'{:8.4f}'}),)
+    # print("\n" + ticker + "= $" + str(priceArray[-1]))  # print last closing price            
+    # print("\n", round((askArray[-1]-bidArray[-1])/((askArray[-1]+bidArray[-1])/2),4)*100,"%" + " spread")
+    print('\033[12A\033[2K', end='') # move cursor up 12 lines and clear line
 
 def on_read(payload):
     global priceArray
-    global askArray
-    global bidArray
+    # global askArray
+    # global bidArray
     # print(payload.keys())
     if payload['channel'] == 'ticker':
         if payload['type'] == 'update':
-            priceArray.append(payload['data']['last'])
+            if len(priceArray) == 0:
+                priceArray.append(payload['data']['last'])
+            elif priceArray[-1] != payload['data']['last']:
+                priceArray.append(payload['data']['last'])
             if len(priceArray)>140:
                 priceArray.pop(0)
-            askArray.append(payload['data']['ask'])
-            if len(askArray)>140:
-                askArray.pop(0)
-            bidArray.append(payload['data']['bid'])
-            if len(bidArray)>140:
-                bidArray.pop(0)
-            print_chart()    
+            # askArray.append(payload['data']['ask'])
+            # if len(askArray)>140:
+            #     askArray.pop(0)
+            # bidArray.append(payload['data']['bid'])
+            # if len(bidArray)>140:
+            #     bidArray.pop(0)
+            print_chart()
 
-if __name__ == '__main__':
-    
+def subscribe_ticker(symbol):
     wsm = ThreadedWebsocketManager(API, SECRET)
     wsm.start()
     name = 'market_connection'
     wsm.start_socket(on_read, socket_name=name)
     wsm.subscribe(name, channel="ticker", op="subscribe", market=symbol)
 
-    # try:
-    #     while True:
-    #         # asyncio.new_event_loop().run_until_complete(get_ohlc(ftx, 'DOGE-PERP', '1m'))
+if __name__ == '__main__':
+    subprocess.call('clear', shell=True)            
+    
+    try:
+        subscribe_ticker(ticker)
+    
 
-    #         # print_chart()
-    #         # asyncio.run(fetch_ticker('DOGE-PERP'))
-    #         exchange = ccxt.ftx()
-    #         orderbook = await exchange.
-    #         now = exchange.milliseconds()
-    #         print(exchange.iso8601(now), symbol, orderbook['asks'][0], orderbook['bids'][0])
-    #     # except Exception as e:
-    #     #     print(str(e))
-    #     #     #raise e  # uncomment to break all loops in case of an error in any one of them
-    #     #     break  # you can also break just this one loop if it fails
-            
-            
-
-    # except KeyboardInterrupt:
-    #     print('Interrupted')
-    #     os._exit(0)
+    except KeyboardInterrupt:
+        print('Interrupted')
+        os._exit(0)
         
 
 
