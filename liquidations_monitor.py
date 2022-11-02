@@ -28,6 +28,7 @@ def on_trade(payload):
                     if setactive:
                         print("Liquidations since start: ", round(rollingliquidations),2)
                         setactive=0
+    return rollingliquidations
 
 def subscribe_trades(symbol):
     wsm = ThreadedWebsocketManager(API, SECRET)
@@ -35,6 +36,8 @@ def subscribe_trades(symbol):
     name = 'market_connection'
     wsm.start_socket(on_trade, socket_name=name)
     wsm.subscribe(name, channel="trades", op="subscribe", market=symbol)
+    
+    return wsm
 
 if __name__ == '__main__':
     subprocess.call('clear', shell=True)            

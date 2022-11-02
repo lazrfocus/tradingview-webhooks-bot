@@ -4,6 +4,8 @@ import api_keys
 import subprocess
 import generic_functions as func
 from decimal import Decimal
+import time
+import os
 
 import requests
 from order_book import OrderBook
@@ -50,7 +52,10 @@ def on_OBupdate(payload):
                     # print(i[0],"ask added")
                     ob.asks[Decimal(i[0])] = Decimal(i[1])
 
+def getTopOrders(ob):
     # convert orderbook to dict
+    topbid = None
+    topask = None
     def convert(x):
         if isinstance(x, Decimal):
             return float(x)
@@ -58,13 +63,17 @@ def on_OBupdate(payload):
             return {k: float(v) for k, v in x.items()}
     ob_dict = ob.to_dict(to_type=convert)
     try:
-        topbid=float(list(ob_dict['bid'].keys())[0])
-        topask=float(list(ob_dict['ask'].keys())[0])
-        print("First Bid   ", topbid)
-        print("First Ask   ", topask)
+        if topbid != float(list(ob_dict['bid'].keys())[0]):
+            topbid=float(list(ob_dict['bid'].keys())[0])
+            # print("First Bid   ", topbid)
+        if topask != float(list(ob_dict['ask'].keys())[0]):
+            topask=float(list(ob_dict['ask'].keys())[0])
+            # print("First Ask   ", topask)
 
     except:
         pass
+
+    return ob_dict, topbid, topask
 
 def subscribe_book(symbol):
     wsm = ThreadedWebsocketManager(API, SECRET)
@@ -79,7 +88,13 @@ if __name__ == '__main__':
     try:
         test_orderbook_init() 
         subscribe_book(symbol)
-         
+
+        while True:
+            fullob, topbid, topask = getTopOrders(ob)
+            print("First Bid   ", topbid)
+            # print("First Ask   ", topask)
+            # time.sleep(1)
+
         
     except KeyboardInterrupt:
         print('Interrupted')
