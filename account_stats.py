@@ -2,7 +2,6 @@ import os
 import subprocess
 import asyncio
 import ccxt.async_support as ccxt
-import api_keys
 import generic_functions as func
 import wallet
 import pnl
