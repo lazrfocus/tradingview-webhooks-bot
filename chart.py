@@ -12,6 +12,10 @@ SECRET = api_keys.FTX_SECRET
 
 ticker = 'DOGE-PERP'
 priceArray = []
+# entry=[0.1445] * 140
+# liquidation=[0.1356] * 140
+# order1 = [.148] * 140
+# order2 = [.150] * 140
 # bidArray = []
 # askArray = []
 
@@ -24,10 +28,11 @@ def print_chart():
     func.clear_sceen()
     # print("\n" + plot([priceArray, askArray, bidArray], {'height': 8, 'format':'{:8.4f}'}),)
     # scrn.addstr(0,0,plot(priceArray, {'height': 8, 'format':'{:8.4f}'}))
-    print(plot(priceArray, {'height': 8, 'format':'{:8.4f}'}),)
+    # print(plot([priceArray, entry, liquidation, order1, order2], {'height': 15, 'format':'{:8.4f}'}),)
+    print(plot(priceArray, {'height': 15, 'format':'{:8.4f}'}))
     # print("\n" + ticker + "= $" + str(priceArray[-1]))  # print last closing price            
     # print("\n", round((askArray[-1]-bidArray[-1])/((askArray[-1]+bidArray[-1])/2),4)*100,"%" + " spread")
-    print('\033[12A\033[2K', end='') # move cursor up 12 lines and clear line
+    # print('\033[14A\033[2K', end='') # move cursor up 14 lines and clear line
 
 def on_read(payload):
     global priceArray
@@ -38,8 +43,10 @@ def on_read(payload):
         if payload['type'] == 'update':
             if len(priceArray) == 0:
                 priceArray.append(payload['data']['last'])
+                print_chart()
             elif priceArray[-1] != payload['data']['last']:
                 priceArray.append(payload['data']['last'])
+                print_chart()
             if len(priceArray)>140:
                 priceArray.pop(0)
             # askArray.append(payload['data']['ask'])
@@ -48,7 +55,6 @@ def on_read(payload):
             # bidArray.append(payload['data']['bid'])
             # if len(bidArray)>140:
             #     bidArray.pop(0)
-            print_chart()
 
 def subscribe_ticker(symbol):
     wsm = ThreadedWebsocketManager(API, SECRET)
@@ -68,8 +74,6 @@ if __name__ == '__main__':
         print('Interrupted')
         os._exit(0)
         
-
-
 
 # async def fetch_ticker(symbol):
 #     # you can set enableRateLimit = True to enable the built-in rate limiter
