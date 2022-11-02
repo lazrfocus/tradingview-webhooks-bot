@@ -12,21 +12,24 @@ SECRET = api_keys.FTX_SECRET
 
 symbol = 'DOGE-PERP'
 
-def on_read(payload):
+def on_rx_trade(payload):
     # print(payload['channel'])
     if payload['channel'] == 'trades':
         if payload['type'] == 'update':
             for i in payload['data']:
-                if i['liquidation'] == 'True':
-                    print("LIQUIDATION", payload['data']['side'], payload['data']['size'], payload['data']['price'], payload['data']['time'],'\n')
-                else:
-                    pass
+                # print(i)
+                # print(bool(i['liquidation']))
+                if bool(i['liquidation']):
+                    print(i)
+                    # print("LIQUIDATION", payload['data']['side'], payload['data']['size'], payload['data']['price'], payload['data']['time'],'\n')
+                # else:
+                #     pass
 
 def subscribe_trades(symbol):
     wsm = ThreadedWebsocketManager(API, SECRET)
     wsm.start()
     name = 'market_connection'
-    wsm.start_socket(on_read, socket_name=name)
+    wsm.start_socket(on_rx_trade, socket_name=name)
     wsm.subscribe(name, channel="trades", op="subscribe", market=symbol)
 
 if __name__ == '__main__':
