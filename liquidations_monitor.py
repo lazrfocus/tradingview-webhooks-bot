@@ -12,18 +12,24 @@ SECRET = api_keys.FTX_SECRET
 
 symbol = 'DOGE-PERP'
 
+rollingliquidations = 0
+
 def on_rx_trade(payload):
     # print(payload['channel'])
+    setactive=0
     if payload['channel'] == 'trades':
         if payload['type'] == 'update':
             for i in payload['data']:
                 # print(i)
                 # print(bool(i['liquidation']))
                 if bool(i['liquidation']):
-                    print(i['time'], "     |  ", i['size'], "   ", i['time'])
-                    # print("LIQUIDATION", payload['data']['side'], payload['data']['size'], payload['data']['price'], payload['data']['time'],'\n')
-                # else:
-                #     pass
+                    print(i['time'], "     |  ", i['size'], "   ", i['price'])
+                    rollingliquidations = float(i['size'])+rollingliquidations
+                    setactive=1
+                else:
+                    if setactive:
+                        print("Liquidations since start: ", round(rollingliquidations),2)
+                        setactive=0
 
 def subscribe_trades(symbol):
     wsm = ThreadedWebsocketManager(API, SECRET)
