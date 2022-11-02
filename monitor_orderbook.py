@@ -92,8 +92,8 @@ if __name__ == '__main__':
         while True:
             fullob, topbid, topask = getTopOrders(ob)
             print("First Bid   ", topbid)
-            # print("First Ask   ", topask)
-            # time.sleep(1)
+            print("First Ask   ", topask)
+            time.sleep(1)
 
         
     except KeyboardInterrupt:
