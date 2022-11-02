@@ -20,7 +20,7 @@ def on_rx_trade(payload):
                 # print(i)
                 # print(bool(i['liquidation']))
                 if bool(i['liquidation']):
-                    print(i)
+                    print(i['time'], "     |  ", i['size'], "   ", i['time'])
                     # print("LIQUIDATION", payload['data']['side'], payload['data']['size'], payload['data']['price'], payload['data']['time'],'\n')
                 # else:
                 #     pass
