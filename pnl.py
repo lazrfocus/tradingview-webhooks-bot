@@ -36,19 +36,20 @@ async def get_positions():
 def print_positions():
     global myPositions
     pnlTable = PrettyTable()
-    pnlTable.field_names = ["Position", "Ticker", "QTY", "Cost", "USD Value", "Entry", "Liquidation", "PnL"]
+    pnlTable.field_names = ["Position", "Ticker", "QTY", "Cost", "USD Value", "Entry", "Mark", "Liquidation", "PnL"]
     
     #print("Position  ", "Ticker  ", "     QTY  ", "     Cost  ", "USD Value  ", "Entry ", "Liquidation ", "PnL")
     for i in myPositions:
         if i['info']['recentPnl'] != None:
+            # print(i)
             if (i['info']['side']) == 'buy':
                 #if float((i['info']['recentPnl'])) >=0: 
                     #print(colorBold,"Long | ", i['info']['future'],colorReset,' | ', str(i['info']['size']), ' | ', round(float((i['info']['collateralUsed'])),1), ' | ', round(float((i['info']['cost'])),1), ' | ', round(float((i['info']['entryPrice'])),4), ' | ', round(float((i['info']['estimatedLiquidationPrice'])),4), ' | ', colorGreen, round(float((i['info']['recentPnl'])),2), colorReset)
-                pnlTable.add_row(["Long", i['info']['future'], str(i['info']['size']), round(float((i['info']['collateralUsed'])),1), round(float((i['info']['cost'])),1), round(float((i['info']['entryPrice'])),4), round(float((i['info']['estimatedLiquidationPrice'])),4), round(float((i['info']['recentPnl'])),2)])
+                pnlTable.add_row(["Long", i['info']['future'], str(i['info']['size']), round(float((i['info']['collateralUsed'])),1), round(float((i['info']['cost'])),1), round(float((i['info']['entryPrice'])),4), round(float((i['info']['estimatedLiquidationPrice'])),4), round(float((i['markPrice'])),4), round(float((i['info']['recentPnl'])),2)])
                 #else:
                 #    print(colorBold,"Long | ", i['info']['future'],colorReset,' | ', str(i['info']['size']), ' | ', round(float((i['info']['collateralUsed'])),1), ' | ', round(float((i['info']['cost'])),1), ' | ', round(float((i['info']['entryPrice'])),4), ' | ', round(float((i['info']['estimatedLiquidationPrice'])),4), ' | ', colorRed, round(float((i['info']['recentPnl'])),2), colorReset)
             elif (i['info']['side']) == 'sell':
-                pnlTable.add_row(["Short", i['info']['future'], str(i['info']['size']), round(float((i['info']['collateralUsed'])),1), round(float((i['info']['cost'])),1), round(float((i['info']['entryPrice'])),4), round(float((i['info']['estimatedLiquidationPrice'])),4), round(float((i['info']['recentPnl'])),2)])
+                pnlTable.add_row(["Short", i['info']['future'], str(i['info']['size']), round(float((i['info']['collateralUsed'])),1), round(float((i['info']['cost'])),1), round(float((i['info']['entryPrice'])),4), round(float((i['info']['estimatedLiquidationPrice'])),4), round(float((i['markPrice'])),4), round(float((i['info']['recentPnl'])),2)])
                 #if float((i['info']['recentPnl'])) >=0: 
                 #    print(colorBold,"Short | ", i['info']['future'],colorReset,' | ', str(i['info']['size']), ' | ', round(float((i['info']['collateralUsed'])),1), ' | ', round(float((i['info']['cost'])),1), ' | ', round(float((i['info']['entryPrice'])),4), ' | ', round(float((i['info']['estimatedLiquidationPrice'])),4), ' | ', colorGreen, round(float((i['info']['recentPnl'])),2), colorReset)
                 #else:
