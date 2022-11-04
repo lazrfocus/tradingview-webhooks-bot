@@ -28,3 +28,6 @@ commands: long [..], short [..], exlong [..], exshort [..], exlongs, exshorts, p
 ```
 12. **the tradingview webhook address will be the ngrok address + /webhook**
 ie: https://1234-45-789-000-00.ngrok.io/webhook
+
+
+if you read this, yea im using global variables right now because i suck at programming kthx

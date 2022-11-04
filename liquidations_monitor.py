@@ -3,6 +3,7 @@ from ftx import ThreadedWebsocketManager
 import api_keys
 import subprocess
 import generic_functions as func
+import os
 
 API = api_keys.FTX_KEY
 SECRET = api_keys.FTX_SECRET
@@ -15,19 +16,23 @@ def on_trade(payload):
     global rollingliquidations
     # print(payload['channel'])
     setactive=0
-    if payload['channel'] == 'trades':
-        if payload['type'] == 'update':
-            for i in payload['data']:
-                # print(i)
-                # print(bool(i['liquidation']))
-                if bool(i['liquidation']):
-                    print(i['time'], "     |  ", i['size'], "   ", i['price'])
-                    rollingliquidations = float(i['size'])+rollingliquidations
-                    setactive=1
-                else:
-                    if setactive:
-                        print("Liquidations since start: ", round(rollingliquidations),2)
-                        setactive=0
+    try:
+        if payload['channel'] == 'trades':
+            if payload['type'] == 'update':
+                for i in payload['data']:
+                    # print(i)
+                    # print(bool(i['liquidation']))
+                    if bool(i['liquidation']):
+                        print(i['time'], "     |  ", i['size'], "   ", i['price'])
+                        rollingliquidations = float(i['size'])+rollingliquidations
+                        setactive=1
+                    else:
+                        if setactive:
+                            print("Liquidations since start: ", round(rollingliquidations),2)
+                            setactive=0
+    except:
+        pass
+    
     return rollingliquidations
 
 def subscribe_trades(symbol):
