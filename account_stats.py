@@ -15,7 +15,7 @@ if __name__ == '__main__':
             subprocess.call('clear', shell=True)
             func.print_time()
             wallet.print_balance()
-            print('--------------------------------')
+            #print('--------------------------------')
             pnl.print_positions()
             func.print_ping()
             

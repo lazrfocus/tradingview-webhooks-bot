@@ -4,8 +4,17 @@ import asyncio
 import ccxt.async_support as ccxt
 import api_keys
 import generic_functions as func
+from prettytable import PrettyTable
+import colorama as ca
 
 myPositions = None
+ca.init(autoreset=False)
+
+# #Color
+colorRed = "\033[0;31;40m" #RED
+colorGreen = "\033[0;32;40m" # GREEN
+colorBold = "\033[1m"
+colorReset = "\033[0m" # Reset
 
 async def get_positions():
     global myPositions
@@ -23,24 +32,32 @@ async def get_positions():
     except:
         print('error')
     
-    await ftx.close()  # don't forget to close it when you're done
-
+    await ftx.close()  # don't forget to close it when you're don
 def print_positions():
     global myPositions
+    pnlTable = PrettyTable()
+    pnlTable.field_names = ["Position", "Ticker", "QTY", "Cost", "USD Value", "Entry", "Liquidation", "PnL"]
     
+    #print("Position  ", "Ticker  ", "     QTY  ", "     Cost  ", "USD Value  ", "Entry ", "Liquidation ", "PnL")
     for i in myPositions:
         if i['info']['recentPnl'] != None:
             if (i['info']['side']) == 'buy':
-                if float((i['info']['recentPnl'])) >=0: 
-                    print('\033[1m',i['info']['side'], i['info']['future'],'\033[0m',' | ', str(i['info']['size']), ' | ', '\x1b[0;32;40m', round(float((i['info']['recentPnl'])),2),'\x1b[0m')
-                else:
-                    print('\033[1m',i['info']['side'], i['info']['future'],'\033[0m',' | ', str(i['info']['size']), ' | ', '\x1b[0;31;40m', round(float((i['info']['recentPnl'])),2),'\x1b[0m')
+                #if float((i['info']['recentPnl'])) >=0: 
+                    #print(colorBold,"Long | ", i['info']['future'],colorReset,' | ', str(i['info']['size']), ' | ', round(float((i['info']['collateralUsed'])),1), ' | ', round(float((i['info']['cost'])),1), ' | ', round(float((i['info']['entryPrice'])),4), ' | ', round(float((i['info']['estimatedLiquidationPrice'])),4), ' | ', colorGreen, round(float((i['info']['recentPnl'])),2), colorReset)
+                pnlTable.add_row(["Long", i['info']['future'], str(i['info']['size']), round(float((i['info']['collateralUsed'])),1), round(float((i['info']['cost'])),1), round(float((i['info']['entryPrice'])),4), round(float((i['info']['estimatedLiquidationPrice'])),4), round(float((i['info']['recentPnl'])),2)])
+                #else:
+                #    print(colorBold,"Long | ", i['info']['future'],colorReset,' | ', str(i['info']['size']), ' | ', round(float((i['info']['collateralUsed'])),1), ' | ', round(float((i['info']['cost'])),1), ' | ', round(float((i['info']['entryPrice'])),4), ' | ', round(float((i['info']['estimatedLiquidationPrice'])),4), ' | ', colorRed, round(float((i['info']['recentPnl'])),2), colorReset)
             elif (i['info']['side']) == 'sell':
-                print(i['info']['side'] + ' ' + i['info']['future'] + ' ' + str(i['info']['size']), round(float((i['info']['recentPnl'])),2))
+                pnlTable.add_row(["Short", i['info']['future'], str(i['info']['size']), round(float((i['info']['collateralUsed'])),1), round(float((i['info']['cost'])),1), round(float((i['info']['entryPrice'])),4), round(float((i['info']['estimatedLiquidationPrice'])),4), round(float((i['info']['recentPnl'])),2)])
+                #if float((i['info']['recentPnl'])) >=0: 
+                #    print(colorBold,"Short | ", i['info']['future'],colorReset,' | ', str(i['info']['size']), ' | ', round(float((i['info']['collateralUsed'])),1), ' | ', round(float((i['info']['cost'])),1), ' | ', round(float((i['info']['entryPrice'])),4), ' | ', round(float((i['info']['estimatedLiquidationPrice'])),4), ' | ', colorGreen, round(float((i['info']['recentPnl'])),2), colorReset)
+                #else:
+                #    print(colorBold,"Short | ", i['info']['future'],colorReset,' | ', str(i['info']['size']), ' | ', round(float((i['info']['collateralUsed'])),1), ' | ', round(float((i['info']['cost'])),1), ' | ', round(float((i['info']['entryPrice'])),4), ' | ', round(float((i['info']['estimatedLiquidationPrice'])),4), ' | ', colorRed, round(float((i['info']['recentPnl'])),2), colorReset)
             else:
                 pass
         else:
             pass
+    print(pnlTable)
     
     return True
 
@@ -58,4 +75,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print('Interrupted')
         os._exit(0)
-        

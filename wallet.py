@@ -4,6 +4,7 @@ import asyncio
 import ccxt.async_support as ccxt
 import api_keys
 import generic_functions as func
+from prettytable import PrettyTable
 
 myBalance = None
 
@@ -26,15 +27,21 @@ async def get_balance():
 
 def print_balance():
     global myBalance
-
+    balanceTable = PrettyTable()
+    totalUSD = 0
     if myBalance != None:
-        print('\033[1m','Coin','\033[0m', 'Total',' | ','Free', ' | ', 'USD Value','\x1b[0m')
+        balanceTable.field_names = ["Coin", "Total", "Free", "USD Value"]
+        #print('\033[1m','Coin','\033[0m', 'Total','     | ','Free', '      | ', 'USD Value','\x1b[0m')
         for i in myBalance['info']['result']:
             if abs(float(i['total'])) > 0.01:
-                print('\033[1m',i['coin'],'\033[0m', round(float(i['total']),2),' | ',round(float(i['free']),2), ' | ', round(float(i['usdValue']),2),'\x1b[0m')
+                #print('\033[1m',i['coin'],'\033[0m', round(float(i['total']),2),'     | ',round(float(i['free']),2), '      | ', round(float(i['usdValue']),2),'\x1b[0m')
+                balanceTable.add_row([i['coin'], round(float(i['total']),2), round(float(i['free']),2), round(float(i['usdValue']),2)])
+                totalUSD = totalUSD + float(i['usdValue'])
         else:
             pass
-    
+        balanceTable.add_row(["Total USD", "","", round(totalUSD,2)])
+        print(balanceTable)
+        
     return True
 
 if __name__ == '__main__':
