@@ -8,7 +8,7 @@ tradingview-webhooks-bot is a trading bot, written in python that allows users t
 ### Quick Start Guide
 
 1. pip3 install ccxt flask pytz
-2. pip3 install python-ftx **req. to be deleted soon**  (python-ftx from https://github.com/wanth1997/python-ftx.git)
+2. pip3 install python-ftx (python-ftx from https://github.com/wanth1997/python-ftx.git)
 12. install ftx-cli from https://github.com/duskcodes/ftx-cli **req. to be deleted soon**
 3. create api_keys.py file and follow format of api_keys_example.py w/ the keys for your exchange
 4. create/login to ngrok.com account

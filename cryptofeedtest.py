@@ -6,6 +6,9 @@ associated with this software.
 from cryptofeed import FeedHandler
 from cryptofeed.defines import ORDER_INFO, TRADES, FILLS
 from cryptofeed.exchanges import FTX
+from cryptofeed.types import Trade
+from cryptofeed.types import OrderInfo
+from cryptofeed.types import Fill
 import api_keys
 
 api_keys.FTX_KEY
@@ -19,22 +22,22 @@ async def trade(t, receipt_timestamp):
 
 
 async def fill(data, receipt_timestamp):
-    print(data)
+    print("Fill:", data.side, data.liquidity, data.symbol, data.price, data.amount, data.fee, data.id, data.order_id, data.timestamp)
 
 
 async def order(data, receipt_timestamp):
-    print(data)
+    print("Order:",data.status, data.side, data.symbol, data.price, data.remaining, data.id, data.timestamp)
+    
 
 def main():
     
     ftx = FTX(config='config.yaml', subaccount='subaccount')
-    #print(ftx.ticker_sync('BTC-USD-PERP'))
-    # print(ftx.orders_sync(symbol='BTC-USD-PERP'))
     f = FeedHandler(config="config.yaml")
-    # print(ftx.symbols())
-    #f.add_feed(FTX(config="config.yaml", subaccount='subaccount', symbols=['BTC-USD', 'BCH-USD', 'USDT-USD'], channels=[TRADES, FILLS, ORDER_INFO], callbacks={TRADES: trade, FILLS: fill, ORDER_INFO: order}))
-    #f.add_feed(FTX(config="config.yaml", symbols=['BTC-USD-PERP', 'ADA-USD-PERP', 'ALGO-USD-PERP'], channels=[TRADES, FILLS, ORDER_INFO], callbacks={TRADES: trade, FILLS: fill, ORDER_INFO: order}))
-    f.add_feed(FTX(config="config.yaml", symbols=['BTC-USD-PERP', 'ADA-USD-PERP', 'ALGO-USD-PERP','AXS-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={TRADES: trade, FILLS: fill, ORDER_INFO: order}))
+    f.add_feed(FTX(config="config.yaml", symbols=['DOGE-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
+    f.add_feed(FTX(config="config.yaml", symbols=['BTC-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
+    f.add_feed(FTX(config="config.yaml", symbols=['ETH-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
+    f.add_feed(FTX(config="config.yaml", symbols=['AXS-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
+    f.add_feed(FTX(config="config.yaml", symbols=['ADA-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
     # calling f.add_feed more than once will create a parallel thread for each feed
     f.run()
 
