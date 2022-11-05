@@ -93,7 +93,7 @@ if __name__ == '__main__':
             fullob, topbid, topask = getTopOrders(ob)
             print("First Bid   ", topbid)
             print("First Ask   ", topask)
-            time.sleep(1)
+            time.sleep(.25)
 
         
     except KeyboardInterrupt:

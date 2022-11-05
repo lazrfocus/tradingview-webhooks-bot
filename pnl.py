@@ -5,10 +5,8 @@ import ccxt.async_support as ccxt
 import api_keys
 import generic_functions as func
 from prettytable import PrettyTable
-import colorama as ca
 
 myPositions = None
-ca.init(autoreset=False)
 
 # #Color
 colorRed = "\033[0;31;40m" #RED
