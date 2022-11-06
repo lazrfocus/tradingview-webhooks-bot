@@ -23,7 +23,7 @@ def on_fill(payload):
     # return rollingliquidations
 
 def on_order(payload):
-    #print(payload)
+    print(payload)
     if payload['channel'] == 'orders':
         if payload['type'] == 'update':
             if payload['data']['status'] == 'closed':

@@ -9,38 +9,92 @@ from cryptofeed.exchanges import FTX
 from cryptofeed.types import Trade
 from cryptofeed.types import OrderInfo
 from cryptofeed.types import Fill
-import api_keys
+import sqlite3
 
-api_keys.FTX_KEY
-# Examples of some handlers for different updates. These currently don't do much.
-# Handlers should conform to the patterns/signatures in callback.py
-# Handlers can be normal methods/functions or async. The feedhandler is paused
-# while the callbacks are being handled (unless they in turn await other functions or I/O)
-# so they should be as lightweight as possible
-async def trade(t, receipt_timestamp):
-    print(t)
+conn = sqlite3.connect('trades.db')
 
+#Colors
+colorRed = "\033[0;31;40m" #RED
+colorGreen = "\033[0;32;40m" # GREEN
+colorBold = "\033[1m"
+colorReset = "\033[0m" # Reset
+
+#async def trade(t, receipt_timestamp):
+#    print(t)
 
 async def fill(data, receipt_timestamp):
-    print("Fill:", data.side, data.liquidity, data.symbol, data.price, data.amount, data.fee, data.id, data.order_id, data.timestamp)
-
+    insertDB_fill(conn, data)
+    printDB_totalfees(conn)
+    printDB_totalfills(conn)
 
 async def order(data, receipt_timestamp):
-    print("Order:",data.status, data.side, data.symbol, data.price, data.remaining, data.id, data.timestamp)
+    print(data)
+    print("Order:",data.status, data.side, data.symbol, '@ $',data.price, 'QTY:', data.remaining, 'id:', data.id, '     ', data.timestamp)
+    insertDB_order(conn, data)
     
+def createDB(conn):
+    c = conn.cursor()
+    c.execute('''CREATE TABLE fills
+                 (symbol text, side text, price real, amount real, fee real, liquidity text, id text, order_id text, timestamp text)''')
+    c.execute('''CREATE TABLE orders
+                 (symbol text, side text, status text, price real, amount real, id text, timestamp text)''')
+    conn.commit()
+    #conn.close()
+    
+def insertDB_fill(conn, data):
+    c = conn.cursor()
+    c.execute("INSERT INTO fills VALUES (?,?,?,?,?,?,?,?,?)", (data.symbol, data.side, float(data.price), float(data.amount), float(data.fee), data.liquidity, str(data.id), str(data.order_id), str(data.timestamp)))
+    conn.commit()
+    #conn.close()
+
+def insertDB_order(conn, data):
+    c = conn.cursor()
+    if data.status == 'submitting':
+        c.execute("INSERT INTO orders VALUES (?,?,?,?,?,?,?)", (data.symbol, data.side, data.status, float(data.price), float(data.remaining), str(data.id), str(data.timestamp)))
+    elif data.status == 'closed':
+        c.execute("DELETE FROM orders WHERE id = ?", (str(data.id),))
+    conn.commit()
+    #conn.close()
+
+def printDB_totalfees(conn):
+    c = conn.cursor()
+    c.execute("SELECT SUM(fee) FROM fills")
+    totalfees = c.fetchone()[0]
+    print(colorBold, 'total fees: $', round(totalfees,2), colorReset)
+
+def printDB_totalfills(conn):
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM fills")
+    totalfills = c.fetchone()[0]
+    print(colorBold, 'total fills: ', totalfills, colorReset)    
+    
+def delete_all_orders(conn):
+    sql = 'DELETE FROM orders'
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
+
+def fetch_open_orders():
+    #TODO: fetch open orders from rest api
+    return
 
 def main():
+    #create db file once then comment it out
+    #createDB(conn)
+    #clear orders for development
+    delete_all_orders(conn)
+    #fetch all open orders from rest api
+    
     
     ftx = FTX(config='config.yaml', subaccount='subaccount')
     f = FeedHandler(config="config.yaml")
-    f.add_feed(FTX(config="config.yaml", symbols=['DOGE-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
-    f.add_feed(FTX(config="config.yaml", symbols=['BTC-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
-    f.add_feed(FTX(config="config.yaml", symbols=['ETH-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
-    f.add_feed(FTX(config="config.yaml", symbols=['AXS-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
-    f.add_feed(FTX(config="config.yaml", symbols=['ADA-USD-PERP'], channels=[FILLS, ORDER_INFO], callbacks={FILLS: fill, ORDER_INFO: order}), retries=-1)
+    
+    #symbols only matters for trades channel
     # calling f.add_feed more than once will create a parallel thread for each feed
+    f.add_feed(FTX(config="config.yaml", symbols=['BTC-USD-PERP'], channels=[FILLS], callbacks={FILLS: fill}), retries=-1)
+    f.add_feed(FTX(config="config.yaml", symbols=['BTC-USD-PERP'], channels=[ORDER_INFO], callbacks={ORDER_INFO: order}), retries=-1)
+    
     f.run()
-
-
+    
 if __name__ == '__main__':
     main()

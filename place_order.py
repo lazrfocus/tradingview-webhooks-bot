@@ -67,6 +67,10 @@ def place_limit_order(ticker, side, percentSize, price, reduceOnly, ioc, postOnl
 def place_market_order(ticker, side, percentSize, reduceOnly, ioc, postOnly):
     print('Placing order')
     
+def place_stop_order(ticker, side, percentSize, price, stopPrice, reduceOnly, ioc, postOnly):
+    print('Placing order')
+    ftx.fetch
+    ftx.create_stop_limit_order(ticker, side, size, price, stopPrice, {'reduceOnly': reduceOnly, 'ioc': ioc, 'postOnly': postOnly})
     
 if __name__ == '__main__':
     func.clear_sceen()
