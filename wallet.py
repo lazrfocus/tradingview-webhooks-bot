@@ -11,35 +11,38 @@ myBalance = None
 async def get_balance():
     global myBalance
 
-    ftx = ccxt.ftx({
-        'apiKey': api_keys.FTX_KEY,
-        'secret': api_keys.FTX_SECRET,
+    bybit = ccxt.bybit({
+        'apiKey': api_keys.BYBIT_KEY,
+        'secret': api_keys.BYBIT_SECRET,
         'enableRateLimit': True,
         # "proxy": "https://cors-anywhere.herokuapp.com/",   ##TODO: create cors vpn
         # "origin": "bitstamp"
     })
     try:
-        myBalance = await ftx.fetch_balance()
+        myBalance = await bybit.fetch_balance()
+#        print(myBalance)
     except:
         print('error')
     
-    await ftx.close()  # don't forget to close it when you're done
+    await bybit.close()  # don't forget to close it when you're done
 
 def print_balance():
     global myBalance
     balanceTable = PrettyTable()
-    totalUSD = 0
+#    totalUSD = 0
     if myBalance != None:
-        balanceTable.field_names = ["Coin", "Total", "Free", "USD Value"]
-        #print('\033[1m','Coin','\033[0m', 'Total','     | ','Free', '      | ', 'USD Value','\x1b[0m')
-        for i in myBalance['info']['result']:
-            if abs(float(i['total'])) > 0.01:
-                #print('\033[1m',i['coin'],'\033[0m', round(float(i['total']),2),'     | ',round(float(i['free']),2), '      | ', round(float(i['usdValue']),2),'\x1b[0m')
-                balanceTable.add_row([i['coin'], round(float(i['total']),2), round(float(i['free']),2), round(float(i['usdValue']),2)])
-                totalUSD = totalUSD + float(i['usdValue'])
+        if myBalance['info']['ret_msg'] == 'OK':
+#            print(myBalance)
+            print('\033[1m','Coin','\033[0m', 'Total','     | ','Free', '      | ', 'USD Value','\x1b[0m')
+            #if abs(float(myBalance['USDT']['total'])) > 0.01:
+            balanceTable.field_names = ["Coin", "Total", "Free", "USD Value"]
+            balanceTable.add_row(['USDT', round(float(myBalance['USDT']['total']),2), round(float(myBalance['USDT']['free']),2), round(float(myBalance['USDT']['total']),2)])
+            balanceTable.add_row(['ETH', round(float(myBalance['ETH']['total']),2), round(float(myBalance['ETH']['free']),2), round(float(myBalance['ETH']['total']),2)])
+
+#            totalUSD = totalUSD + float(i['usdValue'])
         else:
             pass
-        balanceTable.add_row(["Total USD", "","", round(totalUSD,2)])
+#        balanceTable.add_row(["Total USD", "","", round(totalUSD,2)])
         print(balanceTable)
         
     return True
@@ -52,7 +55,7 @@ if __name__ == '__main__':
             subprocess.call('clear', shell=True)
             func.print_time()
             print_balance()
-            func.print_ping()
+#            func.print_ping() #bybit doesnt let you print
             #time.sleep(1)
     except KeyboardInterrupt:
         print('Interrupted')

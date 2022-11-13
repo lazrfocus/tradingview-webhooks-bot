@@ -8,31 +8,34 @@ from prettytable import PrettyTable
 
 myPositions = None
 
-# #Color
-colorRed = "\033[0;31;40m" #RED
-colorGreen = "\033[0;32;40m" # GREEN
-colorBold = "\033[1m"
-colorReset = "\033[0m" # Reset
-
 async def get_positions():
     global myPositions
 
-    ftx = ccxt.ftx({
-        'apiKey': api_keys.FTX_KEY,
-        'secret': api_keys.FTX_SECRET,
+    bybit = ccxt.bybit({
+        'apiKey': api_keys.BYBIT_KEY,
+        'secret': api_keys.BYBIT_SECRET,
         'enableRateLimit': True,
         # "proxy": "https://cors-anywhere.herokuapp.com/",   ##TODO: create cors vpn
         # "origin": "bitstamp"
     })
+    market = await bybit.load_markets()
+
+    symbol = 'BTC/USDT:USDT'
+    market = bybit.market(symbol)
+    params = {'subType':'linear' if market['linear'] else 'inverse'}
     
     try:
-        myPositions = await ftx.fetch_positions()
+        #        myPositions = await bybit.fetch_positions([symbol], params)
+        myPositions = await bybit.fetch_positions()
+        
+        print(myPositions)
     except:
         print('error')
     
-    await ftx.close()  # don't forget to close it when you're don
+    await bybit.close()  # don't forget to close it when you're don
 def print_positions():
     global myPositions
+    print(myPositions)
     pnlTable = PrettyTable()
     pnlTable.field_names = ["Position", "Ticker", "QTY", "Cost", "USD Value", "Avg. Open", "Mark", "Liquidation", "PnL"]
     
@@ -64,10 +67,10 @@ if __name__ == '__main__':
     try:
         while True:
             asyncio.new_event_loop().run_until_complete(get_positions())
-            subprocess.call('clear', shell=True)
+#            subprocess.call('clear', shell=True)
             func.print_time()
-            print_positions()
-            func.print_ping()
+#            print_positions()
+#            func.print_ping()
 
             #time.sleep(1)
     except KeyboardInterrupt:
